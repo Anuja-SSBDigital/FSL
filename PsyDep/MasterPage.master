@@ -1,0 +1,396 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <!-- Required meta tags-->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+
+    <!-- Title Page-->
+    <title>Dashboard</title>
+
+    <!-- Main CSS-->
+    <link href="../css/theme.css" rel="stylesheet" media="all" />
+    <link href="../css/font-face.css" rel="stylesheet" media="all" />
+    <link href="../vendor/font-awesome-4.7/css/font-awesome.min.css" rel="stylesheet" media="all" />
+    <link href="../vendor/font-awesome-5/css/fontawesome-all.min.css" rel="stylesheet" media="all" />
+    <link href="../vendor/mdi-font/css/material-design-iconic-font.min.css" rel="stylesheet" media="all" />
+
+    <!-- Bootstrap CSS-->
+    <link href="../vendor/bootstrap-4.1/bootstrap.min.css" rel="stylesheet" media="all" />
+
+    <!-- Vendor CSS-->
+    <link href="../vendor/animsition/animsition.min.css" rel="stylesheet" media="all" />
+    <link href="../vendor/bootstrap-progressbar/bootstrap-progressbar-3.3.4.min.css" rel="stylesheet" media="all" />
+    <link href="../vendor/wow/animate.css" rel="stylesheet" media="all" />
+    <link href="../vendor/css-hamburgers/hamburgers.min.css" rel="stylesheet" media="all" />
+    <link href="../vendor/slick/slick.css" rel="stylesheet" media="all" />
+    <link href="../vendor/select2/select2.min.css" rel="stylesheet" media="all" />
+    <link href="../vendor/perfect-scrollbar/perfect-scrollbar.css" rel="stylesheet" media="all" />
+
+    <link href="../css/jquery-ui.css" rel="stylesheet" />
+
+
+
+    <script src="../vendor/jquery-3.2.1.min.js"></script>
+    <link href="../css/bootstrap-glyphicons.css" rel="stylesheet" />
+    <link href="../css/bootstrap-glyphicons.min.css" rel="stylesheet" />
+    <script src="../js/jquey-1.10.0.min.js"></script>
+    <script src="../js/jquery-ui.min.js"></script>
+
+    <style>
+        .main-section {
+            margin: 0 auto;
+            padding: 20px;
+            /*margin-top: 100px;*/
+            background-color: #fff;
+            box-shadow: 0px 0px 20px #c1c1c1;
+        }
+
+        .fileinput-remove,
+        .fileinput-upload {
+            display: none;
+        }
+
+        .file-preview-pdf {
+            width: 188px !important;
+        }
+
+        .file-zoom-detail {
+            width: 100% !important;
+        }
+
+        .btn-file {
+            background: #4272d7;
+            color: #fff;
+        }
+
+            .btn-file:hover {
+                background: #3868cd;
+            }
+    </style>
+    <link href="../css/fileinput.css" rel="stylesheet" />
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form id="form1" runat="server">
+        <div>
+            <div class="page-wrapper">
+                <!-- HEADER MOBILE-->
+                <header class="header-mobile d-block d-lg-none">
+                    <div class="header-mobile__bar">
+                        <div class="container-fluid">
+                            <div class="header-mobile-inner">
+                                <a class="logo" href="Dashboard.aspx">
+                                    <h4>SFT</h4>
+                                    <!-- <img src="images/icon/logo.png" alt="DFS" /> -->
+                                </a>
+                                <button class="hamburger hamburger--slider" type="button">
+                                    <span class="hamburger-box">
+                                        <span class="hamburger-inner"></span>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <nav class="navbar-mobile">
+                        <div class="container-fluid">
+                            <ul class="navbar-mobile__list list-unstyled" id="nav">
+                                <li id="liDashM" runat="server">
+                                    <a href="Home.aspx">
+                                        <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                                </li>
+                                <li class="has-sub" id="liMasterM" runat="server">
+                                    <a href="#" class="js-arrow">
+                                        <i class="fas fa-database"></i>Masters</a>
+                                    <ul class="navbar-mobile-sub__list list-unstyled js-sub-list">
+                                        <li id="liInstM" runat="server">
+                                            <a href="InstMaster.aspx">Institute</a>
+                                        </li>
+                                        <li id="liDeptM" runat="server">
+                                            <a href="DeptMaster.aspx">Department</a>
+                                        </li>
+                                        <li id="liDivM" runat="server">
+                                            <a href="DivMaster.aspx">Division</a>
+                                        </li>
+                                        <li id="liRoleM" runat="server">
+                                            <a href="RoleMaster.aspx">Role</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li id="liRRM" runat="server">
+                                    <a href="RoleRights.aspx">
+                                        <i class="fas fas fa-copy"></i>Role Rights</a>
+                                </li>
+                                <li id="liCUM" runat="server">
+                                    <a href="CreateUser.aspx">
+                                        <i class="fas fa-tachometer-alt"></i>Create User</a>
+                                </li>
+                                <li id="liGenCaseM" runat="server">
+                                    <a href="GenCase.aspx">
+                                        <i class="fas fa-hdd"></i>Generate Case</a>
+                                </li>
+                                <li id="liReqDocM" runat="server">
+                                    <a href="AddReqDoc.aspx">
+                                        <i class="fas fa-hdd"></i>Add Required Document
+                                    </a>
+                                </li>
+                                <li id="liAssignM" runat="server">
+                                    <a href="AssignCase.aspx">
+                                        <i class="fas fa-tasks"></i>Assign Case</a>
+                                </li>
+                                <li id="liCaseDM" runat="server">
+                                    <a href="AddCaseDetails.aspx">
+                                        <i class="fas  fa-file-alt"></i>Add Case Details</a>
+                                </li>
+
+                                <%--<li class="has-sub" id="liReportM" runat="server">
+                                    <a href="#" class="js-arrow">
+                                        <i class="fas fa-file-pdf"></i>Report</a>
+                                    <ul class="list-unstyled navbar__sub-list js-sub-list">
+                                        <li id="li4" runat="server">
+                                            <a href="Report.aspx">Case Details</a>
+                                        </li>
+                                        <li id="li5" runat="server">
+                                            <a href="CaseAttachment.aspx">Attachment Details</a>
+                                        </li>
+                                    </ul>
+                                </li>--%>
+                                <li id="liVeriM" runat="server">
+                                    <a href="validatecert.aspx">
+                                        <i class="fas fa-certificate"></i>Verify Evidence</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </nav>
+                </header>
+                <!-- END HEADER MOBILE-->
+
+                <!-- MENU SIDEBAR-->
+                <aside class="menu-sidebar d-none d-lg-block">
+                    <div class="menu-sidebar__content js-scrollbar1">
+                        <div class="account2">
+                            <div class="img-150">
+                                <img src="../images/logo.png" alt="DFS" />
+                            </div>
+                        </div>
+                        <nav class="navbar-sidebar">
+                            <ul class="list-unstyled navbar__list" id="nav">
+                                <li id="liDash" runat="server">
+                                    <a href="Home.aspx">
+                                        <i class="fas fa-tachometer-alt"></i>Dashboard</a>
+                                </li>
+                                <li class="has-sub" id="liMaster" runat="server">
+                                    <a href="#" class="js-arrow">
+                                        <i class="fas fa-database"></i>Masters</a>
+                                    <ul class="list-unstyled navbar__sub-list js-sub-list">
+                                        <li id="liInst" runat="server">
+                                            <a href="InstMaster.aspx">Institute</a>
+                                        </li>
+                                        <li id="liDept" runat="server">
+                                            <a href="DeptMaster.aspx">Department</a>
+                                        </li>
+                                        <li id="liDiv" runat="server">
+                                            <a href="DivMaster.aspx">Division</a>
+                                        </li>
+                                        <li id="liRole" runat="server">
+                                            <a href="RoleMaster.aspx">Role</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li id="liRR" runat="server">
+                                    <a href="RoleRights.aspx">
+                                        <i class="fas fa-tachometer-alt"></i>Role Rights</a>
+                                </li>
+                                <li id="liCU" runat="server">
+                                    <a href="CreateUser.aspx">
+                                        <i class="fas fa-user-plus"></i>Create User</a>
+                                </li>
+                                <li id="liGenCase" runat="server">
+                                    <a href="GenCase.aspx">
+                                        <i class="fas fa-hdd"></i>Generate Case</a>
+                                </li>
+                                <li id="liReqDoc" runat="server">
+                                    <a href="AddReqDoc.aspx">
+                                        <i class="fas fa-hdd"></i>Add Required Document
+                                    </a>
+                                </li>
+                                <li id="liAssign" runat="server">
+                                    <a href="AssignCase.aspx">
+                                        <i class="fas fa-tasks"></i>Assign Case</a>
+                                </li>
+                                <li id="liCaseD" runat="server">
+                                    <a href="AddCaseDetails.aspx">
+                                        <i class="fas  fa-file-alt"></i>Add Case Details</a>
+                                </li>
+                                <%--<li class="has-sub" id="liReport" runat="server">
+                                    <a href="#" class="js-arrow">
+                                        <i class="fas fa-file-pdf"></i>Report</a>
+                                    <ul class="list-unstyled navbar__sub-list js-sub-list">
+                                        <li id="li2" runat="server">
+                                            <a href="Report.aspx">Case Details</a>
+                                        </li>
+                                        <li id="li3" runat="server">
+                                            <a href="CaseAttachment.aspx">Attachment Details</a>
+                                        </li>
+                                    </ul>
+                                </li>--%>
+                                <li id="liVeri" runat="server">
+                                    <a href="validatecert.aspx">
+                                        <i class="fas fa-certificate"></i>Verify Evidence</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </aside>
+                <!-- END MENU SIDEBAR-->
+
+                <!-- PAGE CONTAINER-->
+                <div class="page-container">
+                    <!-- HEADER DESKTOP-->
+                    <header class="header-desktop">
+                        <div class="section__content section__content--p30">
+                            <div class="container-fluid">
+                                <div class="header-wrap">
+                                    <div class="form-header"></div>
+                                    <div class="header-button">
+                                        <div class="account-wrap">
+                                            <div class="account-item clearfix js-item-menu">
+                                                <!--   <div class="image">
+                                            <img src="images/icon/avatar-01.jpg" alt="John Doe" />
+                                        </div> -->
+                                                <div class="content">
+                                                    <i class="fas fa-user" style="margin-right: 10px;"></i>
+                                                    <asp:Label ID="lblUNMaster" runat="server" CssClass="js-acc-btn" Text=""></asp:Label>
+                                                    <%--<a class="js-acc-btn" href="#">john doe</a>--%>
+                                                </div>
+                                                <div class="account-dropdown js-dropdown">
+                                                    <div class="info clearfix">
+                                                        <div class="content">
+                                                            <h5 class="name">
+                                                                <asp:Label ID="lblUserMaster" runat="server"
+                                                                    Text=""></asp:Label>
+                                                                <%--<a class="js-acc-btn" href="#">john doe</a>--%>
+                                                            </h5>
+                                                            <span class="name">
+                                                                <asp:Label ID="lblDesignation" runat="server"
+                                                                    Text=""></asp:Label></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="account-dropdown__body">
+                                                        <div class="account-dropdown__item">
+                                                            <a href="#">
+                                                                <i class="zmdi zmdi-account"></i>Account</a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="account-dropdown__footer">
+                                                        <a href="../Login.aspx">
+                                                            <i class="zmdi zmdi-power"></i>Logout</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+                    <!-- HEADER DESKTOP-->
+
+                    <!-- MAIN CONTENT-->
+                    <div class="main-content">
+                        <div class="section__content section__content--p30">
+                            <div class="container-fluid">
+                                <asp:ContentPlaceHolder ID="ContentPlaceHolder1" runat="server">
+                                </asp:ContentPlaceHolder>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END MAIN CONTENT-->
+                    <!-- END PAGE CONTAINER-->
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+    <div class="modal fade" id="modalFile" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-sm-12 text-center" id="divPre">
+                        <%--<iframe id="ifrm" />--%>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../File_Input/fileinput.js"></script>
+    <script src="../File_Input/theme.js"></script>
+    <script src="../File_Input/popper.min.js"></script>
+    <script src="../File_Input/bootstrap.min.js"></script>
+    <script>
+        $("#fuNot").fileinput({
+            theme: 'fa',
+            uploadUrl: '#',
+            overwriteInitial: false,
+            maxFileSize: 2000,
+            maxFilesNum: 10,
+            slugCallback: function (filename) {
+                return filename.replace('(', '_').replace(']', '_');
+            }
+        });
+    </script>
+    <!-- Bootstrap JS-->
+    <script src="../vendor/bootstrap-4.1/popper.min.js"></script>
+    <script src="../vendor/bootstrap-4.1/bootstrap.min.js"></script>
+    <!-- Vendor JS-->
+    <script src="../vendor/slick/slick.min.js"></script>
+    <script src="../vendor/wow/wow.min.js"></script>
+    <script src="../vendor/animsition/animsition.min.js"></script>
+    <script src="../vendor/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
+    <script src="../vendor/counter-up/jquery.waypoints.min.js"></script>
+    <script src="../vendor/counter-up/jquery.counterup.min.js"></script>
+    <script src="../vendor/circle-progress/circle-progress.min.js"></script>
+    <script src="../vendor/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="../vendor/chartjs/Chart.bundle.min.js"></script>
+    <script src="../vendor/select2/select2.min.js"></script>
+    <!-- Main JS-->
+    <script src="../js/main.js"></script>
+    <!-- Active Menu JS-->
+    <script type="text/javascript">
+        $(function () {
+            $('#nav a').filter(function () { return this.href == location.href }).parent().addClass('active').siblings().removeClass('active')
+
+        });
+
+        function ShowFile(path, exist) {
+            var div = document.getElementById("divPre");
+            if (exist == "True")
+                div.innerHTML = "<iframe src='" + path + "' />";
+            else
+                div.innerHTML = "<div class='col-12'>"
+                    + "<div class='row'>"
+                    + "<lable>This Path is not available currently : " + path + "</label>"
+                    + "</div>"
+                    + "<div class='row'>"
+                    + "<input type='file' id='fuNot' />"
+                    + "</div>"
+                    + "</div>";
+            $('#modalFile').modal('show');
+        }
+    </script>
+
+</body>
+</html>
