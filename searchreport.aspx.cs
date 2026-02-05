@@ -30,7 +30,7 @@ public partial class searchreport : System.Web.UI.Page
             deptcode = ddlDepartment.SelectedValue;
             div_user.Visible = true;
         }
-        rescode = fl.GetUsersDeptcodewise(deptcode);
+        rescode = fl.GetUsersDeptcodewise("", deptcode);
         if (!rescode.StartsWith("Error"))
         {
             DataTable dt = fl.Tabulate(rescode);
@@ -825,7 +825,6 @@ public partial class searchreport : System.Web.UI.Page
         rescode = fl.GetUsersDeptcodewiseafterIndexchanges(Depcode);
         DataTable dt = fl.Tabulate(rescode);
         ddl_user.Items.Clear();
-
         if (dt.Rows.Count > 0)
         {
             ddl_user.DataSource = dt;
@@ -838,7 +837,6 @@ public partial class searchreport : System.Web.UI.Page
         else
         {
             ddl_user.Items.Add(new ListItem("No user found", "-1"));
-            
         }
     }
 
