@@ -1025,45 +1025,118 @@ public class FlureeCS
         return resp;
     }
 
-    public string GetUsersDeptcodewise(string deptcode)
+    public string GetUsersDeptcodewise(string userid, string deptcode)
     {
 
 
-        //string res = "{"
-        //    + "\"select\":{\"?user\":["
-        //    + "\"userid\","
-        //    + "\"firstname\","
-        //    + "\"lastname\""
-        //   + "]},"
-        //    + "\"where\":[";
-
-        //res += "["
-        //+ "\"?user\",\"userdetails/dept_id\","
-        //+ "[\"department_master/dept_code\",\"" + deptcode + "\"]"
-        //+ "]]";
-
-
-        //res += "}";
         string res = "{"
          + "\"select\":{\"?user\":["
          + "\"userid\","
          + "\"firstname\","
          + "\"lastname\""
          + "]},"
-         + "\"where\":["
-         + "[\"?user\",\"userdetails/dept_id\","
-         + "[\"department_master/dept_code\",\"" + deptcode + "\"]]"
-         + "]"
-         + "}";
+         + "\"where\":[";
 
+        // dept condition (always)
+        res += "[\"?user\",\"userdetails/dept_id\","
+            + "[\"department_master/dept_code\",\"" + deptcode + "\"]]";
+
+        // exclude specific userid if provided
+        if (userid != "-1")
+        {
+            res += ",[\"?user\",\"userdetails/userid\",\"?u\"]";
+        }
+
+        res += "]";
+
+        if (userid != "-1")
+        {
+            res += ",\"filter\":[\"(not (= ?u \\\"" + userid + "\\\"))\"]";
+        }
+
+        res += "}";
         string resp = sendTransaction(res, serverqryurl);
 
         return resp;
-
-
-      
     }
-    public string GetEvidencereport(string Agencyname, string CaseNo, string Referenceno, string from, string to, string Division, string user, string status,string institutecode)
+
+
+
+    //public string GetUsersDeptcodewise(string userid, string deptcode)
+    //{
+
+
+    //    string res = "{"
+    //        + "\"select\":{\"?user\":["
+    //        + "\"userid\","
+    //        + "\"firstname\","
+    //        + "\"lastname\""
+    //       + "]},"
+    //        + "\"where\":[";
+    //    if (userid != "-1")
+    //    {
+    //        res += "["
+    //        + "\"?user\",\"userdetails/userid\",\"?u\""
+    //        + "],";
+    //    }
+
+    //    res += "["
+    //    + "\"?user\",\"userdetails/dept_id\","
+    //    + "[\"department_master/dept_code\",\"" + deptcode + "\"]"
+    //    + "]]";
+
+    //    if (userid != "-1")
+    //    {
+    //        res += ","
+    //    + "\"filter\":[\"(not (= ?u \\\"" + userid + "\\\"))\"]";
+    //    }
+    //    res += "}";
+
+    //    string resp = sendTransaction(res, serverqryurl);
+
+    //    return resp;
+    //}
+
+
+    //public string GetUsersDeptcodewise(string deptcode)
+    //{
+
+
+    //    //string res = "{"
+    //    //    + "\"select\":{\"?user\":["
+    //    //    + "\"userid\","
+    //    //    + "\"firstname\","
+    //    //    + "\"lastname\""
+    //    //   + "]},"
+    //    //    + "\"where\":[";
+
+    //    //res += "["
+    //    //+ "\"?user\",\"userdetails/dept_id\","
+    //    //+ "[\"department_master/dept_code\",\"" + deptcode + "\"]"
+    //    //+ "]]";
+
+
+    //    //res += "}";
+    //    string res = "{"
+    //     + "\"select\":{\"?user\":["
+    //     + "\"userid\","
+    //     + "\"firstname\","
+    //     + "\"lastname\""
+    //     + "]},"
+    //     + "\"where\":["
+    //     + "[\"?user\",\"userdetails/dept_id\","
+    //     + "[\"department_master/dept_code\",\"" + deptcode + "\"]]"
+    //     + "]"
+    //     + "}";
+
+    //    string resp = sendTransaction(res, serverqryurl);
+
+    //    return resp;
+
+
+
+    //}
+    public string GetEvidencereport(string Agencyname, string CaseNo, string Referenceno, string from, string to, string Division, string user, string status, string institutecode)
     {
         string res = "{"
          + "\"select\":{\"?stk\":["
@@ -1086,8 +1159,8 @@ public class FlureeCS
 
          + "[\"?stk\",\"evidence_acceptancedetails/createddate\",\"?date\"],"
          + "[\"?stk\",\"evidence_acceptancedetails/status\",\"?status\"]";
-         //+ "[\"?stk\",\"commodityprice/createdby\",[\"userdetails/userid\",\"" + userid + "\"]],"
-       
+        //+ "[\"?stk\",\"commodityprice/createdby\",[\"userdetails/userid\",\"" + userid + "\"]],"
+
         if (Agencyname != "")
         {
             res += ",[\"?stk\",\"evidence_acceptancedetails/agencyname\",\"" + Agencyname + "\"]";
@@ -1155,7 +1228,7 @@ public class FlureeCS
         return resp;
     }
 
-    public string GetEvidenceDetails(string Agencyname, string from, string to, string user,string instcode)
+    public string GetEvidenceDetails(string Agencyname, string from, string to, string user, string instcode)
     {
         string res = "{"
          + "\"select\":{\"?stk\":["
@@ -1178,7 +1251,7 @@ public class FlureeCS
 
          + "[\"?stk\",\"evidence_acceptancedetails/createddate\",\"?date\"],"
          //+ "[\"?stk\",\"commodityprice/createdby\",[\"userdetails/userid\",\"" + userid + "\"]],"
-         + "[\"?stk\",\"evidence_acceptancedetails/inst_code\",\""+ instcode + "\"]";
+         + "[\"?stk\",\"evidence_acceptancedetails/inst_code\",\"" + instcode + "\"]";
         if (Agencyname != "-1")
         {
             res += ",[\"?stk\",\"evidence_acceptancedetails/department_code\",\"" + Agencyname + "\"]";
@@ -1271,25 +1344,23 @@ public class FlureeCS
             + "],";
         }
 
-        res += "["
-        + "\"?user\",\"userdetails/inst_id\","
-        + "[\"institute_master/inst_code\",\"" + instid + "\"]"
-        + "],";
-        res += "["
-        + "\"?user\",\"userdetails/div_id\","
-        + "[\"division_master/div_code\",\"" + divid + "\"]"
-        + "],["
-            + "\"?user\",\"userdetails/isactive\",\"1\""
-            + "]]";
+        res += "[\"?user\",\"userdetails/div_id\",[\"division_master/div_code\",\"" + divid + "\"]],"
+         + "[\"?user\",\"userdetails/inst_id\",[\"institute_master/inst_code\",\"" + instid + "\"]],"
+         + "[\"?user\",\"userdetails/isactive\",\"1\"],"
+         // 👇 ONLY ADD THIS LINE
+         + "[\"?user\",\"userdetails/username\",\"?uname\"]"
+         + "]";
         if (userid != "-1")
         {
-            res += ","
-        + "\"filter\":[\"(not (= ?u \\\"" + userid + "\\\"))\"]";
+            res += ",\"filter\":[\"(and (not (= ?u \\\"" + userid + "\\\")) (not (= ?uname \\\"SuperAdmin\\\")))\"]";
         }
-        res +=
+        else
+        {
+            // 👇 filter only SuperAdmin when userid = -1
+            res += ",\"filter\":[\"(not (= ?uname \\\"SuperAdmin\\\"))\"]";
+        }
 
-
-            "}";
+        res += "}";
 
         string resp = sendTransaction(res, serverqryurl);
 
@@ -1677,7 +1748,7 @@ public class FlureeCS
               + "\"filter\":[\"(and(not (= ?name \\\"ALL Department\\\"))(not (= ?name \\\"Other Sample Warden\\\")))\"],"
             + "\"orderBy\":\"?name\""
             + "}";
- 
+
         string resp = sendTransaction(res, serverqryurl);
 
         return resp;
@@ -2826,7 +2897,7 @@ public class FlureeCS
                 "}]";
 
 
-       string respUser = sendTransaction(resUser, servertranurl);
+        string respUser = sendTransaction(resUser, servertranurl);
 
         return respUser;
 
@@ -2975,7 +3046,7 @@ public class FlureeCS
     {
         string res = "[{\"_id\":" + id
              + ",\"status\":\"" + status;
-   
+
 
 
         if (status == "Mismatch Found")
@@ -3027,7 +3098,7 @@ public class FlureeCS
                     + "\"],";
         res += "\"case_id\":[\"case_master/case_id\",\"" + case_id
         + "\"]}]";
-        
+
         string resp = sendTransaction(res, servertranurl);
 
         return resp;
