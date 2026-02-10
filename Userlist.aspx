@@ -78,7 +78,7 @@
                             <div class="col-lg-12">
                                 <h3 id="title" runat="server" style="text-align: center;"></h3>
                                   <div id="tblData">
-                                <div class="table-responsive table--no-card m-b-30">
+                                <div class="table-responsive table-no-card m-b-30">
                                     <table class="table table-borderless table-striped table-earning" id="tableID" >
                                         <thead id="Header" runat="server">
                                             <tr>
