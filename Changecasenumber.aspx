@@ -61,11 +61,11 @@
 
                 <!-- Case Details (Optional – Visible after search) -->
 
-                <div class="row justify-content-center" runat="server" id="div_rpt" visible="true">
+                <div class="row justify-content-center" runat="server" id="div_rpt" visible="false">
                     <div class="col-lg-12">
-
+                        <asp:HiddenField ID="hdn_idofcase" runat="server"  />
+                        <asp:HiddenField ID="hdncasenum" runat="server"  />
                         <div class="card shadow p-4">
-                            <h4 class="text-center mb-2" id="error" runat="server" style="color: green;"></h4>
                             <h4 class="text-center mb-2" id="title" runat="server" style="color: green;"></h4>
 
                             <div class="form-group mb-3" id="casedata" runat="server" visible="false">
@@ -107,7 +107,7 @@
                                 <div class="text-center mt-2">
                                     <asp:Button ID="btnAjaxSearch" runat="server" CssClass="btn btn-primary px-4"
                                         Text="Update Case"
-                                        OnClientClick="searchCaseAjax(); return false;" />
+                                        OnClick="btnAjaxSearch_Click" />
                                 </div>
                             </div>
 
