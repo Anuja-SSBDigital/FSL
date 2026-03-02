@@ -12,7 +12,7 @@
             </strong>
         </div>
 
-        <div class="card-body card-block">
+        <div class="card-body car   d-block">
             <div class="col-sm-12 form-horizontal">
 
                 <!-- Hidden Field -->
