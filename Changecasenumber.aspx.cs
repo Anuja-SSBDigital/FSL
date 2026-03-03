@@ -223,7 +223,7 @@ public partial class Changecasenumber : System.Web.UI.Page
             {
                 string resforcasedate = fl.SearchEvidenceByCaseOrDepartmentincasemaster(caseNo, Division);
                 if (!resforcasedate.StartsWith("Error"))
-                {
+                {   
                     try
                     {
                         JArray dataArray = JArray.Parse(resforcasedate);
