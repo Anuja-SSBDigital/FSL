@@ -7,7 +7,8 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
+[assembly: log4net.Config.XmlConfigurator(ConfigFile =
+                "log4net.config", Watch = true)]
 public partial class ChangeAsigncase : System.Web.UI.Page
 {
     FlureeCS fl = new FlureeCS();
@@ -234,26 +235,28 @@ public partial class ChangeAsigncase : System.Web.UI.Page
                                 {
                                     allUpdated = false;
                                     // Log failed update
-                                    log.Error("Failed to update TrackMaster: TrackId={trackId}");
+                                    log.Info("Failed to update TrackMaster: TrackId={trackId}");
                                     continue;
                                 }
                             }
                             else
                             {
                                 allUpdated = false;
-                                log.Error("Missing trackId or recordId for trackmaster record.");
+                                log.Info("Missing trackId or recordId for trackmaster record.");
                             }
                         }
                         catch (Exception ex)
                         {
                             allUpdated = false;
-                            log.Error("Exception updating trackmaster record: " + ex.Message);
+                            log.Info("Exception updating trackmaster record: " + ex.Message);
                             continue; // skip this record
                         }
                     }
 
                     if (allUpdated)
                     {
+                        log.Info("allUpdated");
+
                         string selecteduserID = ddl_chnageusername.SelectedValue;
                         string residcase = fl.SearchIDinusermstr(selecteduserID);
                         if (!residcase.StartsWith("Error"))
@@ -276,21 +279,21 @@ public partial class ChangeAsigncase : System.Web.UI.Page
                                     else
                                     {
                                         // Error updating case master
-                                        log.Error("Error updating case master: " + residcase);
+                                        log.Info("Error updating case master: " + residcase);
                                         ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Failed to update case master record.');", true);
                                     }
                                 }
                                 else
                                 {
                                     // No data returned from case master search
-                                    log.Error("No case master record found for caseNo: " + caseNo);
+                                    log.Info("No case master record found for caseNo: " + caseNo);
                                     ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('No case master record found.');", true);
                                 }
                             }
                             catch (Exception ex)
                             {
                                 // JSON parsing or unexpected error
-                                log.Error("Exception processing case master data: " + ex.Message);
+                                log.Info("Exception processing case master data: " + ex.Message);
                                 ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Error processing case master data.');", true);
                             }
                         }
@@ -305,14 +308,14 @@ public partial class ChangeAsigncase : System.Web.UI.Page
                 else
                 {
                     // Error fetching trackmaster data
-                    log.Error("Error fetching trackmaster data: " + resfortrackdata);
+                    log.Info("Error fetching trackmaster data: " + resfortrackdata);
                     ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Failed to fetch trackmaster data.');", true);
                 }
             }
             else
             {
                 // dtdata has no rows
-                log.Error("No data found in dtdata for caseNo: " + caseNo);
+                log.Info("No data found in dtdata for caseNo: " + caseNo);
                 ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('No data found.');", true);
             }
         }
