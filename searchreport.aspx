@@ -2,8 +2,8 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="Server">
 
-     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
-   <%-- <style>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+    <%-- <style>
         .focus {
             background-color: #273b86;
             color: #fff;
@@ -112,7 +112,7 @@
             </div>
 
             <div class="col-sm-12 form-horizontal m-t-30" runat="server" id="div_user" visible="false">
-                <div class="row form-group" >
+                <div class="row form-group">
 
                     <div class="col col-md-6">
 
@@ -184,136 +184,174 @@
                         CssClass="btn btn-dark btn-block" OnClientClick="return AcceptanceVal();" />
                 </div>
             </div>
-            <div class="main-content" runat="server" id="div_rpt" visible="false" style="padding-top: 35px;">
-                <div class="section__content section__content--p30">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-lg-12" >
-                                <asp:Button runat="server" ID="btn_generatepdf" CssClass="btn btn-primary" OnClick="btn_generatepdf_Click" Text="Generate PDF" Style="float: right; margin-bottom: 20px" />
+            <div runat="server" id="div_rpt" visible="false" style="padding-top: 35px;">
 
-                                <h3 id="title" runat="server" style="text-align: center;"></h3>
-                                <div id="tblData">
-                                <div class="table-responsive table-no-card m-b-30" >
-                                    <table class="table table-borderless table-striped table-earning" id="tableID"  >
-                                        <thead id="Header" runat="server">
-                                            <tr>
-                                                <th>No</th>
-                                                <th>Case No</th>
-                                                <th>Agency Name</th>
-                                                <th >Reference No</th>
-                                                <th >Status</th>
-                                                <th >Notes</th>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <asp:Button runat="server" ID="btn_generatepdf" CssClass="btn btn-primary" OnClick="btn_generatepdf_Click" Text="Generate PDF" Style="float: right; margin-bottom: 20px" />
 
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <asp:Repeater runat="server" ID="rpt_details" OnItemDataBound="rpt_details_ItemDataBound">
-                                                <ItemTemplate>
-                                                    <tr>
-                                                        <td>
-                                                            <asp:Label ID="lblRowNumber" Text='<%# Container.ItemIndex + 1 %>' runat="server" /></td>
-                                                        <td><a href="Timeline.aspx?caseno=<%#Eval("caseno") %>"><%#Eval("caseno") %></a></td>
-                                                        <td><%#Eval("agencyname") %></td>
-                                                        <td ><%#Eval("agencyreferanceno") %></td>
-                                                        <td>
-                                                            <asp:HiddenField runat="server" ID="hf_status" Value='<%#Eval("status") %>' />
-                                                            <asp:LinkButton runat="server" Visible="false" ID="lnk_pending" CssClass="text-danger">Pending</asp:LinkButton>
-                                                            <asp:LinkButton runat="server" Visible="false" ID="lnk_completed" CssClass="text-success">Completed</asp:LinkButton>
+                        <h4 id="title" runat="server" style="text-align: center;"></h4>
+                        <div id="tblData">
+                            <div class="table-responsive table-no-card m-b-30">
+                                <table class="table table-borderless table-striped table-earning" id="tableID">
+                                    <thead id="Header" runat="server">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Case No</th>
+                                            <th>Agency Name</th>
+                                            <th>Reference No</th>
+                                            <th>Status</th>
+                                            <th>Notes</th>
 
-                                                        </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <asp:Repeater runat="server" ID="rpt_details" OnItemDataBound="rpt_details_ItemDataBound">
+                                            <ItemTemplate>
+                                                <tr>
+                                                    <td>
+                                                        <asp:Label ID="lblRowNumber" Text='<%# Container.ItemIndex + 1 %>' runat="server" /></td>
+                                                    <td><a href="Timeline.aspx?caseno=<%#Eval("caseno") %>"><%#Eval("caseno") %></a></td>
+                                                    <td><%#Eval("agencyname") %></td>
+                                                    <td><%#Eval("agencyreferanceno") %></td>
+                                                    <td>
+                                                        <asp:HiddenField runat="server" ID="hf_status" Value='<%#Eval("status") %>' />
+                                                        <asp:LinkButton runat="server" Visible="false" ID="lnk_pending" CssClass="text-danger">Pending</asp:LinkButton>
+                                                        <asp:LinkButton runat="server" Visible="false" ID="lnk_completed" CssClass="text-success">Completed</asp:LinkButton>
 
-                                                        <td ><%#Eval("notes") %></td>
+                                                    </td>
 
-                                                    </tr>
-                                                </ItemTemplate>
-                                            </asp:Repeater>
+                                                    <td><%#Eval("notes") %></td>
 
-                                        </tbody>
-                                    </table>
-                                </div>
-                                    </div>
+                                                </tr>
+                                            </ItemTemplate>
+                                        </asp:Repeater>
+
+                                    </tbody>
+                                </table>
                             </div>
+
+
                         </div>
+
                     </div>
                 </div>
+
+            </div>
+            <div class="table-responsive table-no-card m-b-30" runat="server" id="div_otherdept" visible="false">
+                <h4 runat="server" id="otherTitle">Other Cases (Non-matching Users)</h4>
+                <table class="table table-borderless table-striped table-earning" id="tableID1">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Case No</th>
+                            <th>Agency Name</th>
+                            <th>Reference No</th>
+                            <th>Status</th>
+                            <th>Assigned User ID</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <asp:Repeater runat="server" ID="rpt_otherdept" OnItemDataBound="rpt_otherdept_ItemDataBound">
+                            <ItemTemplate>
+                                <tr>
+                                    <td><%# Container.ItemIndex + 1 %></td>
+                                    <td><a href="Timeline.aspx?caseno=<%#Eval("caseno") %>"><%#Eval("caseno") %></a></td>
+                                    <td><%#Eval("agencyname") %></td>
+                                    <td><%#Eval("agencyreferanceno") %></td>
+                                    <td>
+                                        <asp:HiddenField runat="server" ID="hf_status_other" Value='<%#Eval("status") %>' />
+                                        <asp:LinkButton runat="server" ID="lnk_pending_other" Visible="false" CssClass="text-danger">Pending</asp:LinkButton>
+                                        <asp:LinkButton runat="server" ID="lnk_completed_other" Visible="false" CssClass="text-success">Completed</asp:LinkButton>
+                                    </td>
+                                    <td><%#Eval("caseassign_userid") ?? "Not Assigned" %></td>
+                                    <td><%#Eval("notes") %></td>
+                                </tr>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                    </tbody>
+                </table>
             </div>
 
-        </div>
-    </div>
-      <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-    <script>
 
-        function FunctionDivision() {
-            var HdnDivision = document.getElementById("<%= HdnDivision.ClientID %>");
+            <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+            <script>
+
+                function FunctionDivision() {
+                    var HdnDivision = document.getElementById("<%= HdnDivision.ClientID %>");
             var Division = document.getElementById("<%= txt_div.ClientID %>");
-            if (HdnDivision.value == "PSY") {
-                if (Division.value == "LVA" || Division.value == "BEOS" || Division.value == "SDS"
-                    || Division.value == "NARCO" || Division.value == "PSY" || Division.value == "P.Assessment") {
+                    if (HdnDivision.value == "PSY") {
+                        if (Division.value == "LVA" || Division.value == "BEOS" || Division.value == "SDS"
+                            || Division.value == "NARCO" || Division.value == "PSY" || Division.value == "P.Assessment") {
 
-                } else {
-                    alert("The Division code is not in Psychology Division.");
-                    Division.value = "";
+                        } else {
+                            alert("The Division code is not in Psychology Division.");
+                            Division.value = "";
+                        }
+                    }
                 }
-            }
-        }
 
 
-        $(document).ready(function () {
-            $('#tableID').DataTable({});
-        });
+                $(document).ready(function () {
+                    $('#tableID').DataTable({});
+                });
+                $(document).ready(function () {
+                    $('#tableID1').DataTable({});
+                });
 
-        //$(document).ready(function () {
-        //    var totalRows = $('#tblData').find('tbody tr:has(td)').length;
-        //    var recordPerPage = 10;
-        //    var totalPages = Math.ceil(totalRows / recordPerPage);
-        //    var $pages = $('<div id="pages" class="float-xl-right floating-buttons"></div>');
-        //    for (i = 0; i < totalPages; i++) {
+                //$(document).ready(function () {
+                //    var totalRows = $('#tblData').find('tbody tr:has(td)').length;
+                //    var recordPerPage = 10;
+                //    var totalPages = Math.ceil(totalRows / recordPerPage);
+                //    var $pages = $('<div id="pages" class="float-xl-right floating-buttons"></div>');
+                //    for (i = 0; i < totalPages; i++) {
 
-        //        if (i == 0) {
+                //        if (i == 0) {
 
-        //            $('<span class="pageNumber btn-kv focus" id="SrNo_'+(i + 1)+'">&nbsp;' + (i + 1) + '</span>').appendTo($pages);
-        //        } else {
-        //            $('<span class="pageNumber btn-kv" id="SrNo_'+ (i + 1) +'">&nbsp;' + (i + 1) + '</span>').appendTo($pages);
-        //        }
-        //    }
-        //    $pages.appendTo('#tblData');
+                //            $('<span class="pageNumber btn-kv focus" id="SrNo_'+(i + 1)+'">&nbsp;' + (i + 1) + '</span>').appendTo($pages);
+                //        } else {
+                //            $('<span class="pageNumber btn-kv" id="SrNo_'+ (i + 1) +'">&nbsp;' + (i + 1) + '</span>').appendTo($pages);
+                //        }
+                //    }
+                //    $pages.appendTo('#tblData');
 
-        //    $('.pageNumber').hover(
-        //        function () {
-        //            $(this).addClass('focus');
-
-
-        //        },
-        //        function () {
-        //            $(this).removeClass('focus');
-
-        //        }
-        //    );
-
-        //    $('table').find('tbody tr:has(td)').hide();
-        //    var tr = $('table tbody tr:has(td)');
-        //    for (var i = 0; i <= recordPerPage - 1; i++) {
-        //        $(tr[i]).show();
-        //    }
-        //    $('span').click(function (event) {
-        //        $('#tblData').find('tbody tr:has(td)').hide();
-        //        //var currentText = $(this).text();
-        //        var currentText = $(this).text().trim();
-        //        $(this).addClass('focus');
-
-        //        //$('<span class="pageNumber btn-kv focus" id="SrNo_"' + (currentText) +'>' + (currentText) + '</span>');
-        //        var nBegin = ($(this).text() - 1) * recordPerPage;
-        //        var nEnd = $(this).text() * recordPerPage - 1;
-        //        for (var i = nBegin; i <= nEnd; i++) {
-        //            $(tr[i]).show();
-        //        }
-        //    });
-        //});
+                //    $('.pageNumber').hover(
+                //        function () {
+                //            $(this).addClass('focus');
 
 
+                //        },
+                //        function () {
+                //            $(this).removeClass('focus');
 
-        /* Initialization of datatable */
-       
+                //        }
+                //    );
+
+                //    $('table').find('tbody tr:has(td)').hide();
+                //    var tr = $('table tbody tr:has(td)');
+                //    for (var i = 0; i <= recordPerPage - 1; i++) {
+                //        $(tr[i]).show();
+                //    }
+                //    $('span').click(function (event) {
+                //        $('#tblData').find('tbody tr:has(td)').hide();
+                //        //var currentText = $(this).text();
+                //        var currentText = $(this).text().trim();
+                //        $(this).addClass('focus');
+
+                //        //$('<span class="pageNumber btn-kv focus" id="SrNo_"' + (currentText) +'>' + (currentText) + '</span>');
+                //        var nBegin = ($(this).text() - 1) * recordPerPage;
+                //        var nEnd = $(this).text() * recordPerPage - 1;
+                //        for (var i = nBegin; i <= nEnd; i++) {
+                //            $(tr[i]).show();
+                //        }
+                //    });
+                //});
+
+
+
+                /* Initialization of datatable */
+
 
      <%--   function AcceptanceVal() {
 
@@ -365,6 +403,6 @@
              return true;
          }--%>
 
-    </script>
+            </script>
 </asp:Content>
 
