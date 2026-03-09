@@ -1,14 +1,15 @@
-﻿using System;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.draw;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Data;
-using iTextSharp.text;
-using System.IO;
-using iTextSharp.text.pdf;
-using iTextSharp.text.pdf.draw;
 using ListItem = System.Web.UI.WebControls.ListItem;
 
 public partial class searchreport : System.Web.UI.Page
@@ -640,6 +641,13 @@ public partial class searchreport : System.Web.UI.Page
 
     protected void btn_search_Click(object sender, EventArgs e)
     {
+
+
+
+
+
+
+
         double fd = 0;
         double td = 0;
         string txtcaseno = "";
@@ -703,65 +711,281 @@ public partial class searchreport : System.Web.UI.Page
         {
             user = ddl_user.SelectedValue;
         }
+        bool isSearchEmpty =
+    string.IsNullOrWhiteSpace(txt_agencyname.Text) &&
+    string.IsNullOrWhiteSpace(txtcaseno) &&
+    string.IsNullOrWhiteSpace(txt_refernceno.Text) &&
+    string.IsNullOrWhiteSpace(txt_fromdate.Text) &&
+    string.IsNullOrWhiteSpace(txt_todate.Text) &&
+    string.IsNullOrWhiteSpace(Division) &&
+    string.IsNullOrWhiteSpace(user) &&
+    ddl_status.SelectedIndex == 0;
 
+        if (isSearchEmpty)
+        {
+            title.InnerHtml = "<div class='alert alert-danger'>⚠ Please select at least one search criteria.</div>";
+            Header.Visible = false;
+            return;
+        }
 
         string res = fl.GetEvidencereport(txt_agencyname.Text, txtcaseno, txt_refernceno.Text, fd.ToString(), td.ToString(), Division, user, ddl_status.SelectedValue, Session["inst_code"].ToString());
 
         if (!res.StartsWith("Error"))
         {
             DataTable dtdata = fl.Tabulate(res);
+            JArray dataArray = JArray.Parse(res);
+
             if (dtdata.Rows.Count > 0)
             {
                 title.InnerHtml = "";
                 Header.Visible = true;
-                if (txt_fromdate.Text != "" && txt_todate.Text != "")
+
+                if (!string.IsNullOrWhiteSpace(txt_fromdate.Text) && !string.IsNullOrWhiteSpace(txt_todate.Text))
                 {
                     title.InnerText = "Evidence data between " + txt_fromdate.Text + " to " + txt_todate.Text;
                 }
-                //else
-                //{
-                //    title.InnerText = "Evidence data of " + ddlDep.SelectedItem + " Division ";
 
-                //}
-                rpt_details.DataSource = dtdata;
+                // Tables for matched and unmatched cases
+                DataTable dtMatch = dtdata.Clone();   // Cases with user matched
+                DataTable dtOther = dtdata.Clone();   // Cases with user not matched
+
+                Dictionary<string, int> userCaseCount = new Dictionary<string, int>();
+
+                foreach (DataRow row in dtdata.Rows)
+                {
+                    string caseassign_userid = row["caseassign_userid"].ToString();
+                    string caseinst_code = row["inst_code"].ToString();
+                    string casediv_code = row["div_code"].ToString();
+
+                    string resforuserfind = fl.GetUsersForUpdate(caseassign_userid, caseinst_code, casediv_code);
+
+                    bool isUserMatched = false;
+
+                    if (!resforuserfind.StartsWith("Error"))
+                    {
+                        JArray dataArrayGetUsers = JArray.Parse(resforuserfind);
+
+                        foreach (JObject objUser in dataArrayGetUsers)
+                        {
+                            string username = objUser["userid"].ToString();
+
+                            if (username == caseassign_userid) // match user
+                            {
+                                isUserMatched = true;
+
+                                // Count cases per user
+                                if (userCaseCount.ContainsKey(username))
+                                    userCaseCount[username]++;
+                                else
+                                    userCaseCount[username] = 1;
+
+                                break;
+                            }
+                        }
+                    }
+
+                    if (isUserMatched)
+                        dtMatch.ImportRow(row);
+                    else
+                        dtOther.ImportRow(row);
+                }
+
+                // Bind main matched cases
+                rpt_details.DataSource = dtMatch;
                 rpt_details.DataBind();
+
+                // Bind unmatched cases
+                if (dtOther.Rows.Count > 0)
+                {
+                    rpt_otherdept.DataSource = dtOther;
+                    rpt_otherdept.DataBind();
+                    div_otherdept.Visible = true;
+                }
+                else
+                {
+                    div_otherdept.Visible = false;
+                }
+
+                // Optional: display user case counts (e.g., in a literal or console)
+                foreach (var kvp in userCaseCount)
+                {
+                    // Example: print username and case count
+                }
             }
             else
             {
                 Header.Visible = false;
                 title.InnerHtml = "<div class='alert alert-danger' role='alert'>*No Records Found.</div>";
-
                 rpt_details.DataBind();
+                rpt_otherdept.DataBind();
             }
         }
-        //}
-        //else
-        //{
-        //    Response.Write("<script>alert('Please fill at least one category.')</script>");
-        //}
+        else
+        {
+            Response.Write("<script>alert('No data found or an error occurred.')</script>");
+        }
     }
+    //    string res = fl.GetEvidencereport(txt_agencyname.Text, txtcaseno, txt_refernceno.Text, fd.ToString(), td.ToString(), Division, user, ddl_status.SelectedValue, Session["inst_code"].ToString());
+    //    if (!res.StartsWith("Error"))
+    //    {
+    //        DataTable dtdata = fl.Tabulate(res);
+    //        JArray dataArray = JArray.Parse(res);
+
+        //        if (dtdata.Rows.Count > 0)
+        //        {
+        //            title.InnerHtml = "";
+        //            Header.Visible = true;
+        //            if (txt_fromdate.Text != "" && txt_todate.Text != "")
+        //            {
+        //                title.InnerText = "Evidence data between " + txt_fromdate.Text + " to " + txt_todate.Text;
+        //            }
+        //            //else
+        //            //{
+        //            //    title.InnerText = "Evidence data of " + ddlDep.SelectedItem + " Division ";
+
+        //            //}
+
+        //            if (!string.IsNullOrWhiteSpace(Division) && string.IsNullOrWhiteSpace(user))
+        //            {
+        //                JObject obj = (JObject)dataArray[0];
+        //                string fullCaseNo = obj["caseno"].ToString(); // FSL/EE/2025/FPB/20221
+        //                string idofcase = obj["evidenceid"].ToString();
+        //                string Caseassign_userid = obj["caseassign_userid"].ToString();
+        //                string Caseassign_inst_code = obj["inst_code"].ToString();
+        //                string Caseassign_div_code = obj["div_code"].ToString();
+        //                string resforuserfind = fl.GetUsersForUpdate(Caseassign_userid, Caseassign_inst_code, Caseassign_div_code);
+        //                if (!resforuserfind.StartsWith("Error"))
+        //                {
+        //                    JArray dataArrayGetUsers = JArray.Parse(resforuserfind);
+
+        //                    if (dataArrayGetUsers.Count > 0)
+        //                    {
+        //                        JObject objforuser = (JObject)dataArrayGetUsers[0];
 
 
-    //protected void rdo_caseno_CheckedChanged(object sender, EventArgs e)
-    //{
-    //    txt_caseno.Visible = true;
-    //    txt_agencyname.Visible = false;
-    //    txt_refernceno.Visible = false;
-    //}
+        //                    }
+        //                }
 
-    //protected void rdo_agencyname_CheckedChanged(object sender, EventArgs e)
-    //{
-    //    txt_agencyname.Visible = true;
-    //    txt_caseno.Visible = false;
-    //    txt_refernceno.Visible = false;
-    //}
+        //            rpt_details.DataSource = dtdata;
+        //            rpt_details.DataBind();
+        //        }
+        //        else
+        //        {
+        //            Header.Visible = false;
+        //            title.InnerHtml = "<div class='alert alert-danger' role='alert'>*No Records Found.</div>";
 
-    //protected void rdo_referenceno_CheckedChanged(object sender, EventArgs e)
-    //{
-    //    txt_refernceno.Visible = true;
-    //    txt_caseno.Visible = false;
-    //    txt_agencyname.Visible = false;
-    //}
+        //            rpt_details.DataBind();
+        //        }
+        //    }
+
+        //    //if (!res.StartsWith("Error"))
+        //    //{
+        //    //    string divisionCode = "";
+
+        //    //    if (Division == "TOX")
+        //    //    {
+        //    //        divisionCode = "TOX";
+        //    //    }
+        //    //    else if (Division == "CHEM")
+        //    //    {
+        //    //        divisionCode = "CHEM";
+        //    //    }
+        //    //    else if (Division == "BIO")
+        //    //    {
+        //    //        divisionCode = "BIO";
+        //    //    }
+        //    //    DataTable dtdata = fl.Tabulate(res);
+        //    //    if (dtdata.Rows.Count > 0)
+        //    //    {
+        //    //        DataTable dtMatch = dtdata.Clone();   // correct department
+        //    //        DataTable dtOther = dtdata.Clone();   // wrong department
+
+        //    //        title.InnerHtml = "";
+        //    //        Header.Visible = true;
+        //    //        if (txt_fromdate.Text != "" && txt_todate.Text != "")
+        //    //        {
+        //    //            title.InnerText = "Evidence data between " + txt_fromdate.Text + " to " + txt_todate.Text;
+        //    //        }
+        //    //        //else
+        //    //        //{o
+        //    //        //    title.InnerText = "Evidence data of " + ddlDep.SelectedItem + " Division ";
+
+        //    //        //}
+
+        //    //        foreach (DataRow row in dtdata.Rows)
+        //    //        {
+        //    //            string dept = row["department_code"].ToString();
+
+        //    //            if (dept == divisionCode)
+        //    //            {
+        //    //                dtMatch.ImportRow(row);
+        //    //            }
+        //    //            else
+        //    //            {
+        //    //                dtOther.ImportRow(row);
+        //    //            }
+        //    //        }
+
+        //    //        // MAIN DATA
+        //    //        if (dtMatch.Rows.Count > 0)
+        //    //        {
+        //    //            rpt_details.DataSource = dtMatch;
+        //    //            rpt_details.DataBind();
+        //    //        }
+
+        //    //        // OTHER DEPARTMENT DATA
+        //    //        if (dtOther.Rows.Count > 0)
+        //    //        {
+        //    //            rpt_otherdept.DataSource = dtOther;
+        //    //            rpt_otherdept.DataBind();
+        //    //            div_otherdept.Visible = true;
+        //    //        }
+        //    //        else
+        //    //        {
+        //    //            div_otherdept.Visible = false;
+        //    //        }
+
+
+
+        //    //        //rpt_details.DataSource = dtdata;
+        //    //        //rpt_details.DataBind();
+        //    //    }
+        //    //    else
+        //    //    {
+        //    //        Header.Visible = false;
+        //    //        title.InnerHtml = "<div class='alert alert-danger' role='alert'>*No Records Found.</div>";
+
+        //    //        rpt_details.DataBind();
+        //    //    }
+        //    //}
+        //    //}
+        //    //else
+        //    //{
+        //    //    Response.Write("<script>alert('Please fill at least one category.')</script>");
+        //    //}
+        //}
+
+
+        //protected void rdo_caseno_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    txt_caseno.Visible = true;
+        //    txt_agencyname.Visible = false;
+        //    txt_refernceno.Visible = false;
+        //}
+
+        //protected void rdo_agencyname_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    txt_agencyname.Visible = true;
+        //    txt_caseno.Visible = false;
+        //    txt_refernceno.Visible = false;
+        //}
+
+        //protected void rdo_referenceno_CheckedChanged(object sender, EventArgs e)
+        //{
+        //    txt_refernceno.Visible = true;
+        //    txt_caseno.Visible = false;
+        //    txt_agencyname.Visible = false;
+        //}
 
     protected void ddlDepartment_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -819,7 +1043,7 @@ public partial class searchreport : System.Web.UI.Page
         }
     }
 
-    public void fill_user_departmetwise( string Depcode)
+    public void fill_user_departmetwise(string Depcode)
     {
         string rescode = "";
         rescode = fl.GetUsersDeptcodewiseafterIndexchanges(Depcode);
@@ -861,5 +1085,10 @@ public partial class searchreport : System.Web.UI.Page
     protected void btn_generatepdf_Click(object sender, EventArgs e)
     {
         pdf_Details();
+    }
+
+    protected void rpt_otherdept_ItemDataBound(object sender, RepeaterItemEventArgs e)
+    {
+
     }
 }
