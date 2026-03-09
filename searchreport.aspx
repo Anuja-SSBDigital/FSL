@@ -33,8 +33,42 @@
             background-color: #dddddd;
         }
     </style>--%>
+
+    <style>
+        #loader {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <div id="loader" style="display: none;">
+        <div class="spinner"></div>
+    </div>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="Server">
+
     <div class="card">
         <div class="card-header">
             <strong>Search</strong> Report                 
@@ -181,7 +215,8 @@
                 <div class="row form-group">
                     <asp:HiddenField ID="HiddenField1" runat="server" Value="" />
                     <asp:Button ID="btn_search" runat="server" OnClick="btn_search_Click" Text="Search"
-                        CssClass="btn btn-dark btn-block" OnClientClick="return AcceptanceVal();" />
+                        CssClass="btn btn-dark btn-block" OnClientClick="showLoader();" />
+
                 </div>
             </div>
             <div runat="server" id="div_rpt" visible="false" style="padding-top: 35px;">
@@ -273,84 +308,99 @@
                     </tbody>
                 </table>
             </div>
+        </div>
+    </div>
 
+    <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("loader").style.display = "flex";
+        });
 
-            <script type="text/javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
-            <script>
+        window.onload = function () {
+            setTimeout(function () {
+                document.getElementById("loader").style.display = "none";
+            }, 300); // small delay for smooth hide
+        };
+        function showLoader() {
+            document.getElementById("loader").style.display = "flex";
+        }
+    </script>
+    <script>
 
-                function FunctionDivision() {
-                    var HdnDivision = document.getElementById("<%= HdnDivision.ClientID %>");
-            var Division = document.getElementById("<%= txt_div.ClientID %>");
-                    if (HdnDivision.value == "PSY") {
-                        if (Division.value == "LVA" || Division.value == "BEOS" || Division.value == "SDS"
-                            || Division.value == "NARCO" || Division.value == "PSY" || Division.value == "P.Assessment") {
+        function FunctionDivision() {
+            var HdnDivision = document.getElementById("<%= HdnDivision.ClientID %>");
+                    var Division = document.getElementById("<%= txt_div.ClientID %>");
+            if (HdnDivision.value == "PSY") {
+                if (Division.value == "LVA" || Division.value == "BEOS" || Division.value == "SDS"
+                    || Division.value == "NARCO" || Division.value == "PSY" || Division.value == "P.Assessment") {
 
-                        } else {
-                            alert("The Division code is not in Psychology Division.");
-                            Division.value = "";
-                        }
-                    }
+                } else {
+                    alert("The Division code is not in Psychology Division.");
+                    Division.value = "";
                 }
+            }
+        }
 
 
-                $(document).ready(function () {
-                    $('#tableID').DataTable({});
-                });
-                $(document).ready(function () {
-                    $('#tableID1').DataTable({});
-                });
+        $(document).ready(function () {
+            $('#tableID').DataTable({});
+        });
+        $(document).ready(function () {
+            $('#tableID1').DataTable({});
+        });
 
-                //$(document).ready(function () {
-                //    var totalRows = $('#tblData').find('tbody tr:has(td)').length;
-                //    var recordPerPage = 10;
-                //    var totalPages = Math.ceil(totalRows / recordPerPage);
-                //    var $pages = $('<div id="pages" class="float-xl-right floating-buttons"></div>');
-                //    for (i = 0; i < totalPages; i++) {
+        //$(document).ready(function () {
+        //    var totalRows = $('#tblData').find('tbody tr:has(td)').length;
+        //    var recordPerPage = 10;
+        //    var totalPages = Math.ceil(totalRows / recordPerPage);
+        //    var $pages = $('<div id="pages" class="float-xl-right floating-buttons"></div>');
+        //    for (i = 0; i < totalPages; i++) {
 
-                //        if (i == 0) {
+        //        if (i == 0) {
 
-                //            $('<span class="pageNumber btn-kv focus" id="SrNo_'+(i + 1)+'">&nbsp;' + (i + 1) + '</span>').appendTo($pages);
-                //        } else {
-                //            $('<span class="pageNumber btn-kv" id="SrNo_'+ (i + 1) +'">&nbsp;' + (i + 1) + '</span>').appendTo($pages);
-                //        }
-                //    }
-                //    $pages.appendTo('#tblData');
+        //            $('<span class="pageNumber btn-kv focus" id="SrNo_'+(i + 1)+'">&nbsp;' + (i + 1) + '</span>').appendTo($pages);
+        //        } else {
+        //            $('<span class="pageNumber btn-kv" id="SrNo_'+ (i + 1) +'">&nbsp;' + (i + 1) + '</span>').appendTo($pages);
+        //        }
+        //    }
+        //    $pages.appendTo('#tblData');
 
-                //    $('.pageNumber').hover(
-                //        function () {
-                //            $(this).addClass('focus');
-
-
-                //        },
-                //        function () {
-                //            $(this).removeClass('focus');
-
-                //        }
-                //    );
-
-                //    $('table').find('tbody tr:has(td)').hide();
-                //    var tr = $('table tbody tr:has(td)');
-                //    for (var i = 0; i <= recordPerPage - 1; i++) {
-                //        $(tr[i]).show();
-                //    }
-                //    $('span').click(function (event) {
-                //        $('#tblData').find('tbody tr:has(td)').hide();
-                //        //var currentText = $(this).text();
-                //        var currentText = $(this).text().trim();
-                //        $(this).addClass('focus');
-
-                //        //$('<span class="pageNumber btn-kv focus" id="SrNo_"' + (currentText) +'>' + (currentText) + '</span>');
-                //        var nBegin = ($(this).text() - 1) * recordPerPage;
-                //        var nEnd = $(this).text() * recordPerPage - 1;
-                //        for (var i = nBegin; i <= nEnd; i++) {
-                //            $(tr[i]).show();
-                //        }
-                //    });
-                //});
+        //    $('.pageNumber').hover(
+        //        function () {
+        //            $(this).addClass('focus');
 
 
+        //        },
+        //        function () {
+        //            $(this).removeClass('focus');
 
-                /* Initialization of datatable */
+        //        }
+        //    );
+
+        //    $('table').find('tbody tr:has(td)').hide();
+        //    var tr = $('table tbody tr:has(td)');
+        //    for (var i = 0; i <= recordPerPage - 1; i++) {
+        //        $(tr[i]).show();
+        //    }
+        //    $('span').click(function (event) {
+        //        $('#tblData').find('tbody tr:has(td)').hide();
+        //        //var currentText = $(this).text();
+        //        var currentText = $(this).text().trim();
+        //        $(this).addClass('focus');
+
+        //        //$('<span class="pageNumber btn-kv focus" id="SrNo_"' + (currentText) +'>' + (currentText) + '</span>');
+        //        var nBegin = ($(this).text() - 1) * recordPerPage;
+        //        var nEnd = $(this).text() * recordPerPage - 1;
+        //        for (var i = nBegin; i <= nEnd; i++) {
+        //            $(tr[i]).show();
+        //        }
+        //    });
+        //});
+
+
+
+        /* Initialization of datatable */
 
 
      <%--   function AcceptanceVal() {
@@ -358,7 +408,7 @@
             var year = document.getElementById("<%= txt_year.ClientID %>");
              var div = document.getElementById("<%= txt_div.ClientID %>");
              var no = document.getElementById("<%= txt_no.ClientID %>");
-
+                 
              if (year.value == "") {
                  year.classList.add('is-invalid');
                  return false;
@@ -403,6 +453,6 @@
              return true;
          }--%>
 
-            </script>
+    </script>
 </asp:Content>
 
