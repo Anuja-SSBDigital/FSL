@@ -722,14 +722,14 @@ public partial class searchreport_count : System.Web.UI.Page
             return;
         }
         bool isOnlyDateSearch =
-    !string.IsNullOrWhiteSpace(txt_fromdate.Text) &&
-    !string.IsNullOrWhiteSpace(txt_todate.Text) &&
-    string.IsNullOrWhiteSpace(txt_agencyname.Text) &&
-    string.IsNullOrWhiteSpace(txtcaseno) &&
-    string.IsNullOrWhiteSpace(txt_refernceno.Text) &&
-    string.IsNullOrWhiteSpace(Division) &&
-    string.IsNullOrWhiteSpace(user) &&
-    ddl_status.SelectedIndex == 0;
+          !string.IsNullOrWhiteSpace(txt_fromdate.Text) &&
+          !string.IsNullOrWhiteSpace(txt_todate.Text) &&
+          string.IsNullOrWhiteSpace(txt_agencyname.Text) &&
+          string.IsNullOrWhiteSpace(txtcaseno) &&
+          string.IsNullOrWhiteSpace(txt_refernceno.Text) &&
+          string.IsNullOrWhiteSpace(Division) &&
+          string.IsNullOrWhiteSpace(user) &&
+          ddl_status.SelectedValue == "Report Submission";
         string res = fl.GetEvidencereport(txt_agencyname.Text, txtcaseno, txt_refernceno.Text, fd.ToString(), td.ToString(), Division, user, ddl_status.SelectedValue, Session["inst_code"].ToString());
 
         if (!res.StartsWith("Error"))
@@ -774,6 +774,7 @@ public partial class searchreport_count : System.Web.UI.Page
                         Repeater_count.DataBind();
 
                         div_otherdept.Visible = false;
+                        div_rpt.Visible = false;
                     }
                 }
                 else
