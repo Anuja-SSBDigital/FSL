@@ -114,6 +114,7 @@
             <!-- ==================== USER-WISE CASE SUMMARY TABLE ==================== -->
             <div id="div_userSummary" runat="server" visible="false" style="margin-top: 25px;">
                 <h4>User-wise Case Summary</h4>
+                <asp:Button runat="server" ID="btn_generatepdf" CssClass="btn btn-primary" OnClick="btn_generatepdf_Click1" Text="Generate PDF" Style="float: right; margin-bottom: 20px" />
 
                 <table class="table table-borderless table-striped table-earning" id="userSummaryTable">
                     <thead id="userHeader" runat="server">
@@ -121,9 +122,9 @@
                             <th style="width: 50px;">No</th>
                             <th>User Name</th>
                             <th>Department</th>
-                            <th style="text-align: center;">Total Cases</th>
+                            <%--<th style="text-align: center;">Total Cases</th>--%>
                             <th style="text-align: center; color: green;">Completed</th>
-                            <th style="text-align: center; color: #ff9800;">Pending</th>
+                            <%--<th style="text-align: center; color: #ff9800;">Pending</th>--%>
                         </tr>
                     </thead>
                     <tbody>
@@ -135,15 +136,15 @@
                                     </td>
                                     <td><%# Eval("UserName") %></td>
                                     <td><%# Eval("Department") %></td>
-                                    <td style="text-align: center; font-weight: bold;">
+                                    <%-- <td style="text-align: center; font-weight: bold;">
                                         <%# Eval("TotalCases") %>
-                                    </td>
+                                    </td>--%>
                                     <td style="text-align: center; color: green; font-weight: bold;">
                                         <%# Eval("CompleteCases") %>
                                     </td>
-                                    <td style="text-align: center; color: #ff9800; font-weight: bold;">
+                                    <%-- <td style="text-align: center; color: #ff9800; font-weight: bold;">
                                         <%# Eval("PendingCases") %>
-                                    </td>
+                                    </td>--%>
                                 </tr>
                             </ItemTemplate>
                         </asp:Repeater>
