@@ -151,6 +151,36 @@
                     </tbody>
                 </table>
             </div>
+            <%-- Department-wise Summary (shown only when search by Date + Status only) --%>
+            <div id="div_deptSummary" runat="server" visible="false" style="margin-top: 25px;">
+                <h4>Department-wise Case Summary</h4>
+                <asp:Button runat="server" ID="btn_generatepdf_dept" CssClass="btn btn-primary"
+                    OnClick="btn_generatepdf_dept_Click" Text="Generate PDF"
+                    Style="float: right; margin-bottom: 20px" />
+
+                <table class="table table-borderless table-striped table-earning" id="tableID1">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">No</th>
+                            <th>Department</th>
+                            <th style="text-align: center; color: green;">Completed Cases</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <asp:Repeater ID="Repeater_deptSummary" runat="server">
+                            <ItemTemplate>
+                                <tr>
+                                    <td><%# Container.ItemIndex + 1 %></td>
+                                    <td><%# Eval("Department") %></td>
+                                    <td style="text-align: center; color: green; font-weight: bold;">
+                                        <%# Eval("Completed") %>
+                                    </td>
+                                </tr>
+                            </ItemTemplate>
+                        </asp:Repeater>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
