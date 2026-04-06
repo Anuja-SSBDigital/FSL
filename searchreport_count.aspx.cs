@@ -3,6 +3,7 @@ using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.draw;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Activities.Expressions;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
@@ -157,40 +158,57 @@ public partial class searchreport_count : System.Web.UI.Page
 
             foreach (DataRow row in dtdata.Rows)
             {
+
                 string dept = row["div_code"].ToString().Trim() ?? "Unknown Department";
                 if (string.IsNullOrEmpty(dept)) dept = "Unknown Department";
-
+                string divCode = row["div_code"].ToString().Trim() ?? "";
                 string status = row["status"].ToString() ?? "";
                 string statusLower = status.ToLower();
+                string departmentName = fl.GetDepartmentNameByDivCode(divCode);
 
-                bool isComplete = statusLower.Contains("report submission") ||
-                                  statusLower.Contains("complete") ||
-                                  statusLower.Contains("submitted") ||
-                                  statusLower.Contains("closed");
-
-                if (isComplete)
+                if (!departmentName.StartsWith("Error"))
                 {
-                    if (!deptSummary.ContainsKey(dept))
-                        deptSummary[dept] = 0;
+                    JArray dataArrayGetDep = JArray.Parse(departmentName);
+                    foreach (JObject objDep in dataArrayGetDep)
+                    {
+                        if (objDep["dept_name"].ToString() != "")
+                        {
 
-                    deptSummary[dept]++;
+                            // ====================== USER FULL NAME ======================
+                            string FulldepartmentName = (objDep["dept_name"].ToString() ?? "").Trim();
+
+                            departmentName = FulldepartmentName;
+                        }
+                    }
+                    bool isComplete = statusLower.Contains("report submission") ||
+                              statusLower.Contains("complete") ||
+                              statusLower.Contains("submitted") ||
+                              statusLower.Contains("closed");
+
+                    if (isComplete)
+                    {
+                        if (!deptSummary.ContainsKey(departmentName))
+                            deptSummary[departmentName] = 0;
+
+                        deptSummary[departmentName]++;
+                    }
                 }
-            }
 
-            if (deptSummary.Count > 0)
-            {
-                DataTable dtDept = new DataTable();
-                dtDept.Columns.Add("Department");
-                dtDept.Columns.Add("Completed", typeof(int));
-
-                foreach (var item in deptSummary.OrderByDescending(x => x.Value))
+                if (deptSummary.Count > 0)
                 {
-                    dtDept.Rows.Add(item.Key, item.Value);
-                }
+                    DataTable dtDept = new DataTable();
+                    dtDept.Columns.Add("Department");
+                    dtDept.Columns.Add("Completed", typeof(int));
 
-                Repeater_deptSummary.DataSource = dtDept;
-                Repeater_deptSummary.DataBind();
-                div_deptSummary.Visible = true;
+                    foreach (var item in deptSummary.OrderByDescending(x => x.Value))
+                    {
+                        dtDept.Rows.Add(item.Key, item.Value);
+                    }
+
+                    Repeater_deptSummary.DataSource = dtDept;
+                    Repeater_deptSummary.DataBind();
+                    div_deptSummary.Visible = true;
+                }
             }
         }
         else
@@ -320,7 +338,7 @@ public partial class searchreport_count : System.Web.UI.Page
                 title.InnerHtml += "<div class='alert alert-info'>No matched user records found.</div>";
             }
         }
-    }
+        }
 
     public class UserCaseSummary
     {
@@ -348,7 +366,7 @@ public partial class searchreport_count : System.Web.UI.Page
         return "";
     }
 
-  
+
 
     protected void rpt_details_ItemDataBound(object sender, RepeaterItemEventArgs e)
     {
