@@ -114,7 +114,7 @@
             <!-- ==================== USER-WISE CASE SUMMARY TABLE ==================== -->
             <div id="div_userSummary" runat="server" visible="false" style="margin-top: 25px;">
                 <h4>User-wise Case Summary</h4>
-                <asp:Button runat="server" ID="btn_generatepdf" CssClass="btn btn-primary" OnClick="btn_generatepdf_Click1" Text="Generate PDF" Style="float: right; margin-bottom: 20px" />
+                <asp:Button runat="server" ID="btn_generatepdf" CssClass="btn btn-primary" OnClick="btn_generatepdf_Click1" Text="Generate PDF"  Style="float: right; margin-bottom: 20px" />
 
                 <table class="table table-borderless table-striped table-earning" id="userSummaryTable">
                     <thead id="userHeader" runat="server">
