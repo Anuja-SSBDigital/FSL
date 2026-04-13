@@ -142,45 +142,36 @@ public partial class Home : System.Web.UI.Page
                             }
 
                             string user = fl.GetUsers("-1", Session["inst_code"].ToString(), splitcase[1]);
-                            if (!user.StartsWith("Error") && !string.IsNullOrWhiteSpace(user))
+
+                            if (!user.StartsWith("Error"))
                             {
+                                // Convert string → DataTable
                                 DataTable dt = fl.Tabulate(user);
 
                                 if (dt.Rows.Count > 0)
                                 {
-                                    // === REMOVE DUPLICATE USERS BASED ON userid (_id) ===
-                                    DataTable distinctDT = dt.DefaultView.ToTable(true,
-                                        "userid", "firstname", "lastname", "username", "_id", "email");
+                                    // Remove duplicates based on _id
+                                    var grouped = dt.AsEnumerable()
+                                        .GroupBy(r => r["_id"])
+                                        .Select(g => g.First());
 
-                                    // Add FullName column
-                                    distinctDT.Columns.Add("FullName", typeof(string));
+                                    DataTable uniqueRows = grouped.Any() ? grouped.CopyToDataTable() : dt.Clone();
 
-                                    foreach (DataRow row in distinctDT.Rows)
+                                    // Trim values (recommended)
+                                    foreach (DataRow row in uniqueRows.Rows)
                                     {
-                                        string firstname = row["firstname"].ToString().Trim() ?? "";
-                                        string lastname = row["lastname"].ToString().Trim() ?? "";
-                                        string username = row["username"].ToString().Trim() ?? "";
-
-                                        // Change this line if you want different format
-                                        row["FullName"] = (firstname + " " + lastname).Trim();
-
-                                        // Alternative (uncomment if needed):
-                                        // row["FullName"] = (firstname + " " + lastname + " (" + username + ")").Trim();
+                                        row["firstname"] = row["firstname"].ToString().Trim();
+                                        row["lastname"] = row["lastname"].ToString().Trim();
                                     }
 
-                                    ddlUser.DataSource = distinctDT;
+                                    // Create Full Name column
+                                    uniqueRows.Columns.Add("FullName", typeof(string), "firstname + ' ' + lastname");
+
+                                    // Bind dropdown
+                                    ddlUser.DataSource = uniqueRows;
                                     ddlUser.DataTextField = "FullName";
-                                    ddlUser.DataValueField = "userid";     // Unique value
-
+                                    ddlUser.DataValueField = "userid";
                                     ddlUser.DataBind();
-
-                                    // Add default option
-                                    ddlUser.Items.Insert(0, new ListItem("-- Select User --", ""));
-                                }
-                                else
-                                {
-                                    ddlUser.Items.Clear();
-                                    ddlUser.Items.Insert(0, new ListItem("-- No Users Found --", ""));
                                 }
                             }
                             ddlUser.Items.Insert(0, new ListItem("-- Select User --", "-1"));
