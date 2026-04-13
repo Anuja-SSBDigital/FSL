@@ -142,17 +142,45 @@ public partial class Home : System.Web.UI.Page
                             }
 
                             string user = fl.GetUsers("-1", Session["inst_code"].ToString(), splitcase[1]);
-                            if (!user.StartsWith("Error"))
+                            if (!user.StartsWith("Error") && !string.IsNullOrWhiteSpace(user))
                             {
                                 DataTable dt = fl.Tabulate(user);
+
                                 if (dt.Rows.Count > 0)
                                 {
-                                    ddlUser.DataSource = dt;
-                                    ddlUser.DataTextField = "firstname" + "lastname";
-                                    //+ " " + "lastname";
-                                    ddlUser.DataValueField = "userid";
+                                    // === REMOVE DUPLICATE USERS BASED ON userid (_id) ===
+                                    DataTable distinctDT = dt.DefaultView.ToTable(true,
+                                        "userid", "firstname", "lastname", "username", "_id", "email");
+
+                                    // Add FullName column
+                                    distinctDT.Columns.Add("FullName", typeof(string));
+
+                                    foreach (DataRow row in distinctDT.Rows)
+                                    {
+                                        string firstname = row["firstname"].ToString().Trim() ?? "";
+                                        string lastname = row["lastname"].ToString().Trim() ?? "";
+                                        string username = row["username"].ToString().Trim() ?? "";
+
+                                        // Change this line if you want different format
+                                        row["FullName"] = (firstname + " " + lastname).Trim();
+
+                                        // Alternative (uncomment if needed):
+                                        // row["FullName"] = (firstname + " " + lastname + " (" + username + ")").Trim();
+                                    }
+
+                                    ddlUser.DataSource = distinctDT;
+                                    ddlUser.DataTextField = "FullName";
+                                    ddlUser.DataValueField = "userid";     // Unique value
+
                                     ddlUser.DataBind();
 
+                                    // Add default option
+                                    ddlUser.Items.Insert(0, new ListItem("-- Select User --", ""));
+                                }
+                                else
+                                {
+                                    ddlUser.Items.Clear();
+                                    ddlUser.Items.Insert(0, new ListItem("-- No Users Found --", ""));
                                 }
                             }
                             ddlUser.Items.Insert(0, new ListItem("-- Select User --", "-1"));
