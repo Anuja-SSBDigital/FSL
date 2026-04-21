@@ -144,6 +144,9 @@
             <div class="col-12 m-t-20" id="divcd" runat="server" visible="false">
                 <div class="alert alert-primary" role="alert" id="timeline" runat="server">
                 </div>
+                <div id="uploadNotice" style="background-color: #fff3cd; border-left: 6px solid #ffc107; color: #856404; padding: 12px 15px; margin-bottom: 15px; border-radius: 4px; font-size: 14px;">
+                    <strong>Notice:</strong> While uploading Exhibits, Annexures, or Reports, please do not use <b>"."</b> or <b>"/"</b> in file names.
+                </div>
                 <%-- <div class="col-12 row m-b-20">
                     External URL : 
                     <asp:HyperLink ID="lblURL" runat="server" CssClass="text-info m-l-10"
@@ -402,7 +405,7 @@
                         CssClass="btn btn-success btn-block" OnClick="btnInsert_Click" />
                 </div>
             </div>
-        </div>
+    </div>
     </div>
 
     <script>
