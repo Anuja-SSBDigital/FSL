@@ -265,7 +265,7 @@
                                     <div class="col-12 col-md-9">
                                         <div class="file-loading">
                                             <%--<input type="file" id="" class=" form-group file" />--%>
-                                            <asp:FileUpload ID="fuExb" runat="server"
+                                            <asp:FileUpload ID="fuExb" runat="server" onchange="checkFileName(this)"
                                                 CssClass="form-group file" />
                                         </div>
                                     </div>
@@ -302,7 +302,7 @@
                                     <div class="col-12 col-md-9 ">
                                         <div class="file-loading">
                                             <%--<input type="file" id="fuAnn" class="file form-group" />--%>
-                                            <asp:FileUpload ID="fuAnn" runat="server"
+                                            <asp:FileUpload ID="fuAnn" runat="server" onchange="checkFileName(this)"
                                                 CssClass="form-group file" />
                                         </div>
                                     </div>
@@ -338,7 +338,7 @@
                                     <div class="col-12 col-md-9 ">
                                         <div class="file-loading">
                                             <%--<input type="file" id="fuRep" class="form-group file" />--%>
-                                            <asp:FileUpload ID="fuRep" runat="server"
+                                            <asp:FileUpload ID="fuRep" runat="server" onchange="checkFileName(this)"
                                                 CssClass="form-group file" />
                                         </div>
                                     </div>
@@ -405,7 +405,7 @@
                         CssClass="btn btn-success btn-block" OnClick="btnInsert_Click" />
                 </div>
             </div>
-    </div>
+        </div>
     </div>
 
     <script>
@@ -442,6 +442,57 @@
         function CaseDetails(userid, caseno, notes) {
         }
     </script>
+    <script>
+        function checkFileName(input) {
+            //if (input.files && input.files.length > 0) {
+            //    var fileName = input.files[0].name;
 
+            //    console.log("Selected File:", fileName);
+
+            //    // count dots in full filename
+            //    var dotCount = (fileName.match(/\./g) || []).length;
+
+            //    if (dotCount !== 1) {
+            //        console.log("❌ REJECTED FILE:", fileName);
+            //        alert("Invalid file name! Only one '.' allowed before extension.");
+            //        input.value = ""; // clear file
+            //    } else {
+            //        console.log("✅ ACCEPTED FILE:", fileName);
+            //    }
+            //}
+            if (!input.files || input.files.length === 0) return;
+
+            var fileName = input.files[0].name;
+            console.log("Selected File:", fileName);
+
+            var lastDot = fileName.lastIndexOf(".");
+            var namePart = fileName.substring(0, lastDot);
+            var ext = fileName.substring(lastDot).toLowerCase();
+
+            // Allowed extensions
+            var allowedExt = [".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png",".zip"];
+
+            console.log("Name:", namePart);
+            console.log("Extension:", ext);
+
+            // RULE 1: no dot inside filename
+            if (namePart.includes(".")) {
+                console.log("❌ REJECT: dot inside filename");
+                alert("Invalid file name: dot not allowed in name");
+                input.value = "";
+                return;
+            }
+
+            // RULE 2: extension must be valid
+            if (!allowedExt.includes(ext)) {
+                console.log("❌ REJECT: invalid extension");
+                alert("Invalid file type: " + ext);
+                input.value = "";
+                return;
+            }
+
+            console.log("✅ ACCEPTED FILE:", fileName);
+        }
+    </script>
 </asp:Content>
 
