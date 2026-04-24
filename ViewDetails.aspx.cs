@@ -180,7 +180,25 @@ public partial class ViewDetails : System.Web.UI.Page
                                 string[] filepath = path.Split('/');
                                 string localhost = filepath[2];
                                 string[] split = localhost.Split(':');
+                                string fixedPath = path;
 
+                                // 🛠 Fix 1: if extension missing → assume PDF
+                                if (!Path.HasExtension(path))
+                                {
+                                    fixedPath = path + ".pdf";
+                                }
+
+                                // 🛠 Fix 2: handle wrong extension like ".2025-xxx"
+                                else
+                                {
+                                    string ext = Path.GetExtension(path).ToLower();
+
+                                    // if extension is not valid → force pdf
+                                    if (ext.Length > 5 || !ext.Contains("pdf"))
+                                    {
+                                        fixedPath = path + ".pdf";
+                                    }
+                                }
                                 string Host = Request.Url.Host;
                                 string type1 = "";
                                 if (split[0] == "localhost")
@@ -236,8 +254,8 @@ public partial class ViewDetails : System.Web.UI.Page
                                     }
                                     else
                                     {
-                                        html += "<td><a href='" + path + "'  target='_blank'>" + filename + "</a></td>";
-
+                                        //html += "<td><a href='" + path + "'  target='_blank'>" + filename + "</a></td>";
+                                        html += "<td><a href='" + fixedPath + "' target='_blank'>" + filename + "</a></td>";
                                     }
 
                                     html += "<td>" + type + "</td>";
